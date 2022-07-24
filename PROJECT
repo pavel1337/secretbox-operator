@@ -1,0 +1,16 @@
+domain: ipvl.de
+layout:
+- go.kubebuilder.io/v3
+projectName: secretbox-operator
+repo: github.com/pavel1337/secretbox-operator
+resources:
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: ipvl.de
+  group: secretbox
+  kind: Secretbox
+  path: github.com/pavel1337/secretbox-operator/api/v1
+  version: v1
+version: "3"

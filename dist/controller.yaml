@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: secretbox-operator-deployment
+  namespace: secretbox-operator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: secretbox-operator-controller
+  template:
+    metadata:
+      labels:
+        app: secretbox-operator-controller
+    spec:
+      containers:
+        - name: secretbox-operator-controller
+          image: pv1337/secretbox-operator:latest
+          imagePullPolicy: Always
+      serviceAccountName: secretbox-operator-svc
