@@ -6,6 +6,12 @@ You’ll need a Kubernetes cluster to run against. You can use [KIND](https://si
 
 ### Install controller
 
+```
+git clone https://github.com/pavel1337/secretbox-operator
+cd secretbox-operator
+kubectl apply -f dist/
+```
+
 ### Create secretbox instance
 
 You can create a sample secretbox instance by running:
