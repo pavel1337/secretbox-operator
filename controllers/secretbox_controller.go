@@ -140,7 +140,7 @@ func (r *SecretboxReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 	}
 
 	// Updating the status of the Secretbox object
-	pods, err := r.getLatestPods(ctx, deployment)
+	pods, err := r.getLatestPods(ctx, secretbox)
 	if err != nil {
 		log.Error(err, "Unable to get pods")
 		return ctrl.Result{}, err
@@ -378,16 +378,16 @@ func (r *SecretboxReconciler) deletePods(ctx context.Context, secretbox *secretb
 	return nil
 }
 
-// getLatestPods returns the latest pods belonging to the given deployment.
-func (r *SecretboxReconciler) getLatestPods(ctx context.Context, deployment *apps.Deployment) ([]corev1.Pod, error) {
+// getLatestPods returns the latest pods belonging to the given secretbox.
+func (r *SecretboxReconciler) getLatestPods(ctx context.Context, secretbox *secretboxv1.Secretbox) ([]corev1.Pod, error) {
 	log := log.FromContext(ctx)
 
-	log.Info(fmt.Sprintf("Getting latest pods belonging to Deployment %s", deployment.Name))
+	log.Info(fmt.Sprintf("Getting latest pods belonging to Secretbox %s", secretbox.Name))
 
 	pods := &corev1.PodList{}
 	if err := r.List(ctx, pods, &client.ListOptions{
-		Namespace:     deployment.Namespace,
-		LabelSelector: labels.SelectorFromSet(deployment.Spec.Selector.MatchLabels),
+		Namespace:     secretbox.Namespace,
+		LabelSelector: labels.SelectorFromSet(secretbox.GetLabels()),
 	}); err != nil {
 		return nil, fmt.Errorf("failed to list pods: %w", err)
 	}
@@ -407,6 +407,10 @@ func (r *SecretboxReconciler) getState(ctx context.Context, pods []corev1.Pod) s
 		if pod.Status.Phase == corev1.PodRunning {
 			count++
 		}
+	}
+
+	if len(pods) < 1 {
+		return secretboxv1.SecretboxStateUnhealthy
 	}
 
 	if len(pods) == count {
