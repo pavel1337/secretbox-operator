@@ -37,7 +37,17 @@ type SecretboxSpec struct {
 type SecretboxStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
+
+	// +optional
+	State SecretboxState `json:"state,omitempty"`
 }
+
+type SecretboxState string
+
+const (
+	SecretboxStateHealthy   SecretboxState = "Healthy"
+	SecretboxStateUnhealthy SecretboxState = "Unhealthy"
+)
 
 //+kubebuilder:object:root=true
 //+kubebuilder:subresource:status
